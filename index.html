@@ -1,56 +1,62 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
-    <link rel="icon" href="./src/img/favicon.ico" />
-    <link rel="stylesheet" type="text/css" href="./src/css/love.css" />
-    <script src="./src/js/heart.js"></script>
-    <title>Tell U How I Feel|小可爱表白墙</title>
-  </head>
-  <body>
-    <div class="container">
-      <header>
-        <div class="header-img">
-          <img alt="header-img" src="./src/img/header-img.png"></img>
-        </div>
-      </header>
-      <div class="card">
-        <div class="card-header">
-          <h4>小可爱表白墙</h4>
-          <div class="hl"></div>
-        </div>
-        <form action="javascript:void(0);" method="POST" class="submit">
-          <div id="content-box">
-            <div class="form-group">
-              <label>
-                <b>上传图片（可选）</b>
-                <input id="file" type="file" name="file" accept="image/*" />
-              </label>
-            </div>
-            <div class="form-group">
-              <textarea class="form-control content" name="content" placeholder="表白内容" required="required"></textarea> 
-            </div>
-            <div class="form-group">
-              <textarea class="form-control nickname" name="nickname" placeholder="昵称" required="required"></textarea>
-            </div>
-            <div class="form-group">
-              <textarea class="form-control contact" name="contact" placeholder="联系方式" required="required"></textarea>
-            </div>
-            <div class="form-group">
-              <button type="submit" class="btn-submit" tabindex="0">
-                提交
-              </button>
-            </div>
-          </div>
-          
-       </form>
-      </div> 
-    </div>
-    <footer>
-      <p>Made with 💓 by <b><a target="_blank" href="https://xnor.online">Xnor</a></b>. </p>
-      <p>©<span class="copyright-year"> 2020</span></p>
-   </footer>
-  </body>
+
+<head>
+	<meta charset="UTF-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+	<meta http-equiv="X-UA-Compatible" content="ie=edge,chrome=1" />
+	<link rel="icon" href="./src/img/favicon.ico" />
+	<link rel="stylesheet" type="text/css" href="./src/css/main.css" />
+	<script async src="./src/js/type-heart.js"></script>
+	<title>Tell U How I Feel|小可爱表白墙</title>
+</head>
+
+<body>
+	<div class="container">
+		<header>
+			<img class="header-img" alt="header-img" src="./src/img/header-img.png"></img>
+		</header>
+		<div class="card">
+			<div class="card-header">
+				<h4>小可爱表白墙</h4>
+				<div class="hl"></div>
+			</div>
+			<form action="javascript:void(0);" method="POST">
+				<div id="content-box">
+					<div class="form-group">
+						<label>
+							<b>上传图片（可选）</b>
+							<input id="file" type="file" name="file" accept="image/*" />
+						</label>
+					</div>
+					<div class="form-group">
+						<textarea class="form-control content" name="content" minlength="3" maxlength="200" placeholder="表白内容（ 3~200字 ）" required></textarea>
+					</div>
+					<div class="form-group">
+						<textarea class="form-control nickname" name="nickname" placeholder="昵称" required></textarea>
+					</div>
+					<div class="form-group selection">
+						<select id="contact-select" class="form-control contact-select" required>
+							<option value="" disabled selected>联系方式</option>
+							<option value="qq">QQ</option>
+							<option value="wechat">微信</option>
+							<option value="phone">手机</option>
+						</select>
+						<textarea id="contact" class="form-control contact" name="contact" required></textarea>
+					</div>
+					<div class="form-group">
+						<button type="submit" class="btn-submit" tabindex="0">
+							提交
+						</button>
+					</div>
+				</div>
+			</form>
+		</div>
+	</div>
+	<footer>
+		<p>Made with 💓 by <b><a target="_blank" href="https://xnor.online">Xnor</a></b>. </p>
+		<p>©<span> 2020</span></p>
+	</footer>
+</body>
+
 </html>

@@ -1,3 +1,13 @@
+html {
+  box-sizing: border-box;
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+}
+
+*, *::before, *::after {
+  box-sizing: inherit;
+}
+
 body {
   margin: 0;
   background-color: #f4f6f9;
@@ -8,7 +18,6 @@ body {
   line-height: 1.5;
   font-size: 14px;
   font-weight: 400;
-  box-sizing: border-box;
   width: 100%;
   padding-right: 15px;
   padding-left: 15px;
@@ -35,7 +44,6 @@ header img {
 
 .card {
   transition: all 0.35s ease-in;
-  box-sizing: border-box;
   display: flex;
   flex-direction: column;
   min-width: 0;
@@ -56,7 +64,6 @@ header img {
 }
 
 .card-header {
-  box-sizing: border-box;
   background-color: transparent;
   line-height: 30px;
   align-self: center;
@@ -87,32 +94,51 @@ header img {
   top: 70px;
   left: 1.5rem;
   border-radius: 6px;
-  box-shadow: 0 2px 12px rgba(151, 223, 253, 0.85);
+  box-shadow: 0 2px 6px #acb5f6;
 }
 
 .card-header h4:hover::after {
   width: 6em;
 }
 
-.form-group textarea {
-  box-sizing: border-box;
+.form-group .form-control {
   resize: none;
   border: 0;
   width: 100%;
   border-radius: 5px;
   background-color: rgba(241, 241, 241, 0.98);
-  height: 100px;
+  height: 39px;
   padding: 10px;
   outline-color: #6777ef;
   margin: 10px 0;
 }
 
-.form-group .nickname {
-  height: 39px;
+.selection {
+  display: block;
+  position: relative;
+  line-height: 39px;
+  width: 100%;
+  margin-bottom: 75px;
+}
+
+.form-group .content {
+  height: 100px;
+}
+
+.form-group .contact-select {
+  position: absolute;
+  display: inline-block;
+  width: 34%;
+  top: 0;
+  left: 0;
+  padding-left: 6px;
 }
 
 .form-group .contact {
-  height: 39px;
+  position: absolute;
+  display: inline-block;
+  width: 63%;
+  right: 0;
 }
 
 .form-group #file {
@@ -120,8 +146,7 @@ header img {
 }
 
 .form-group label {
-  transition: background-color 0.15s ease-in-out;
-  box-sizing: border-box;
+  transition: 0.15s ease-in-out;
   max-width: 100%;
   display: inline-block;
   padding: 6px 10px 6px 16px;
@@ -133,11 +158,11 @@ header img {
   vertical-align: middle;
   touch-action: manipulation;
   cursor: pointer;
-  border: 1px solid transparent;
+  border: 1px solid #acb5f6;
   border-radius: 0.6rem;
   color: #fff;
   background-color: #6777ef;
-  border-color: #acb5f6;
+  box-shadow: 0 2px 6px #acb5f6;
   position: absolute;
   top: 2.2em;
   right: 1.5rem;
@@ -148,13 +173,12 @@ label:hover {
 }
 
 .form-group .btn-submit {
-  box-sizing: border-box;
   margin: 10px 0;
   text-transform: none;
   text-align: center;
   user-select: none;
-  border: 1px solid transparent;
-  transition: background-color 0.15s ease-in-out;
+  border: 1px solid #acb5f6;
+  transition: 0.15s ease-in-out;
   color: #fff;
   border-radius: 0.9rem;
   display: block;
@@ -164,7 +188,6 @@ label:hover {
   letter-spacing: 0.5px;
   box-shadow: 0 2px 6px #acb5f6;
   background-color: #6777ef;
-  border-color: #acb5f6;
   padding: 0.55rem 1.5rem;
   font-size: 16px;
   cursor: pointer;
@@ -178,7 +201,7 @@ label:hover {
 footer {
   text-align: center;
   bottom: 0;
-  font-family: "Fira Code", "Segoe UI", arial;
+  font-family: "Fira Code";
   font-size: 12px;
 }
 
@@ -186,6 +209,6 @@ footer a {
   text-decoration: none;
 }
 
-footer .copyright-year {
+footer span {
   font-family: sans-serif;
 }
