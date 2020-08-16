@@ -4,6 +4,7 @@
 	"description": "😘 表白墙 demo/Tell u how i feel",
 	"main": "app.js",
 	"dependencies": {
+		"formidable": "^1.2.2",
 		"koa": "^2.13.0",
 		"koa-body": "^4.2.0",
 		"koa-router": "^9.1.0",

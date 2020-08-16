@@ -4,8 +4,13 @@
 		<meta charset="UTF-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 		<link rel="icon" href="./src/img/favicon.ico" />
-		<link rel="stylesheet" type="text/css" href="./src/css/main.css" />
 		<link rel="stylesheet" href="./src/css/layui.css" />
+		<style>
+			#demo {
+				margin-top: 200px;
+				padding: 0 40px;
+			}
+		</style>
 		<title>Admin</title>
 	</head>
 	<body>
@@ -14,14 +19,19 @@
 		<script src="./src/layui.js"></script>
 		<script type="text/html" id="userBar">
 			<div class="layui-btn-container">
-			    <button class="layui-btn layui-btn-sm" lay-event="detail">查看</button>
-			    <button class="layui-btn layui-btn-sm" lay-event="edit">编辑</button>
-			    <button class="layui-btn layui-btn-danger  layui-btn-sm" lay-event="changeStu">删除</button>
+			    <a class="layui-btn layui-btn-sm" lay-event="edit">编辑</a>
+			    <a class="layui-btn layui-btn-danger  layui-btn-sm" lay-event="del">删除</a>
 			</div>
 		</script>
 		<script>
 			layui.use('table', function () {
-				var table = layui.table;
+				var table = layui.table,
+					form = layui.form,
+					table = layui.table,
+					layer = layui.layer,
+					vipTable = layui.vip_table,
+					util = layui.util,
+					$ = layui.jquery;
 
 				//第一个实例
 				table.render({
@@ -35,45 +45,173 @@
 							{
 								field: 'Id',
 								title: 'ID',
-								width: 80,
+								width: 100,
 								sort: true,
-								fixed: 'left',
+								fixed: 'left'
 							},
-							{ field: 'Name', title: '用户名', width: 80 },
+							{ field: 'Author', title: '作者', width: 80 },
 							{
 								field: 'Contact',
 								title: '联系',
-								width: 80,
-								sort: true,
+								width: 160,
+								sort: true
 							},
 							{
 								field: 'Way',
 								title: '联系方式',
-								width: 80,
-								sort: true,
+								width: 120,
+								sort: true
 							},
 							{
 								field: 'Content',
 								title: '内容',
-								width: 80,
+								width: 200
+							},
+							{
+								field: 'Img',
+								title: '附图',
+								templet: function (d) {
+									return window.location.host + d.Img.substring(8);
+								},
+								width: 200
 							},
 							{
 								field: 'Time',
-								title: '时间',
-								width: 80,
-								sort: true,
+								title: '创建时间',
+								width: 180,
+								templet: function (d) {
+									return util.toDateString(d.Time * 1, 'yyyy年MM月dd日 HH:mm:ss');
+								},
+								sort: true
 							},
+							,
 							{
-								field: 'toolBar',
+								fixed: 'right',
 								title: '操作',
-								align: 'center',
-								width: 200,
 								toolbar: '#userBar',
-							},
-						],
-					],
+								width: 150,
+								align: 'center'
+							}
+						]
+					]
+				});
+
+				table.on('tool(test)', function (obj) {
+					//注：tool 是工具条事件名，test 是 table 原始容器的属性 lay-filter="对应的值"
+					var data = obj.data; //获得当前行数据
+					var layEvent = obj.event; //获得 lay-event 对应的值（也可以是表头的 event 参数对应的值）
+					var tr = obj.tr; //获得当前行 tr 的 DOM 对象（如果有的话）
+					var dataId = data.Id;
+
+					if (layEvent === 'del') {
+						//删除
+						layer.confirm('确认要删除吗', function (index) {
+							var xmlhttp = new XMLHttpRequest();
+							xmlhttp.open('GET', 'del/' + dataId, true);
+							xmlhttp.send();
+							obj.del(); //删除对应行（tr）的DOM结构，并更新缓存
+							layer.close(index);
+							//向服务端发送删除指令
+						});
+					} else if (layEvent === 'edit') {
+						layer.open({
+							//layer提供了5种层类型。可传入的值有：0（信息框，默认）1（页面层）2（iframe层）3（加载层）4（tips层）
+							type: 1,
+							zIndex: 20010711,
+							title: '修改',
+							content: $('#popUpdateTest') //引用的弹出层的页面层的方式加载修改界面表单
+						});
+
+						form.val('formEdit', {
+							Author: data.Author,
+							Content: data.Content,
+							Way: data.Way,
+							Contact: data.Contact
+						});
+						//动态向表传递赋值可以参看文章进行修改界面的更新前数据的显示，当然也是异步请求的要数据的修改数据的获取
+						form.on('submit(editSubmit)', function (massage) {
+							$.ajax({
+								url: '/edit',
+								type: 'POST',
+								dataType: 'json',
+								data: {
+									editId: dataId,
+									newAuthor: massage.field.Author,
+									newContent: massage.field.Content,
+									newWay: massage.field.Way,
+									newContact: massage.field.Contact
+								},
+								success: function (data) {
+									var returnCode = data.code; //取得返回数据（Sting类型的字符串）的信息进行取值判断
+									if (returnCode == 0) {
+										layer.closeAll('loading');
+										layer.load(2);
+										layer.msg('修改成功', { icon: 6, zIndex: 20010711 });
+										setTimeout(function () {
+											obj.update({
+												Author: massage.field.Author,
+												Content: massage.field.Content,
+												Way: massage.field.Way,
+												Contact: massage.field.Contact
+											}); //修改成功修改表格数据不进行跳转
+											layer.closeAll(); //关闭所有的弹出层
+										}, 1000);
+									} else {
+										layer.msg('修改失败', { icon: 5 });
+									}
+								}
+							});
+							return false;
+						});
+					}
 				});
 			});
 		</script>
+
+		<div id="popUpdateTest" style="display: none;">
+			<form class="layui-form layui-form-pane" lay-filter="formEdit" action="" style="margin-top: 20px;">
+				<div class="layui-form-item">
+					<label class="layui-form-label">昵称</label>
+					<div class="layui-input-block">
+						<input type="text" name="Author" required lay-verify="required" autocomplete="off" class="layui-input" />
+					</div>
+				</div>
+				<div class="layui-form-item">
+					<label class="layui-form-label">表白内容</label>
+					<div class="layui-input-block">
+						<input type="text" name="Content" required lay-verify="required" autocomplete="off" class="layui-input" />
+					</div>
+				</div>
+
+				<div class="layui-form-item">
+					<label class="layui-form-label">联系方式</label>
+					<div class="layui-input-block">
+						<select name="Way" lay-filter="Way">
+							<option value="wechat">微信</option>
+							<option value="qq">QQ</option>
+							<option value="phone">手机</option>
+						</select>
+					</div>
+				</div>
+
+				<div class="layui-form-item">
+					<label class="layui-form-label">联系方式</label>
+					<div class="layui-input-block">
+						<input type="text" name="Contact" required lay-verify="required" autocomplete="off" class="layui-input" />
+					</div>
+				</div>
+
+				<div class="layui-form-item" style="margin-top: 40px;">
+					<div class="layui-input-block">
+						<button class="layui-btn layui-btn-submit" lay-submit lay-filter="editSubmit">
+							确认修改
+						</button>
+						<button type="reset" class="layui-btn layui-btn-primary">
+							重置
+						</button>
+					</div>
+				</div>
+			</form>
+		</div>
 	</body>
 </html>
