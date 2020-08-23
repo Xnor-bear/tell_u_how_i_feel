@@ -21,7 +21,7 @@
 				<h4>小可爱表白墙</h4>
 				<div class="hl"></div>
 			</div>
-			<form action="/submit" method="POST" enctype="multipart/form-data">
+			<form action="/submit" target="nm_iframe" method="POST" enctype="multipart/form-data" autocomplete="off">
 				<div id="content-box">
 					<div class="form-group">
 						<label>
@@ -44,7 +44,7 @@
 						<textarea id="contact" class="form-control contact" name="contact" placeholder="联系方式（可选）"></textarea>
 					</div>
 					<div class="form-group">
-						<button type="submit" class="btn-submit" tabindex="0">
+						<button type="submit" id="submitBtn" class="btn-submit" tabindex="0">
 							提交
 						</button>
 					</div>
@@ -53,9 +53,31 @@
 		</div>
 	</div>
 	<footer>
-		<p>Made with 💓 by <b><a target="_blank" href="https://xnor.online">Xnor</a></b>. </p>
-		<p>©<span> 2020</span></p>
+		<p>Copyright © 2018 - 2020 <b><a target="_blank" href="//lkdxka.com">LKDXKA</a></b> All Rights Reserved.</p>
+        <p>湖南庠序文化传媒有限公司   觅漾工作室    旗下品牌</p>
+		<p>Made with 💓 by <b><a target="_blank" href="//xnor.online">Xnor</a></b>. </p>
 	</footer>
+	<iframe name="nm_iframe" style="display:none;"></iframe>
+	<script src="./src/layui.js" charset="utf-8"></script>
+	<script>
+			//提交验证
+			layui.use(['jquery','layer'], function(){
+				var $ = layui.$
+
+				$('form').on('submit', function(e){
+					var able = $('#submitBtn').hasClass('disabled')
+					if (able) {
+						e.preventDefault()
+						layer.msg('已经提交过啦~')
+					}
+					else {
+						$('#submitBtn').addClass('disabled')
+						layer.msg('提交成功啦~')
+					}
+				})
+
+			})
+	</script>
 </body>
 
 </html>

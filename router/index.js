@@ -18,8 +18,15 @@ var pool = mysql.createPool({
 
 //数据库数据 api
 router.get('/admin/api', async (ctx) => {
+	let param = ctx.query || ctx.params;
+	if (param.page == '' || param.page == null || param.page == undefined || param.limit == '' || param.limit == null || param.limit == undefined) {
+		res.end(JSON.stringify({ msg: '请传入参数page', status: '102' }));
+		return;
+	}
+
 	let data = await new Promise((resolve, reject) => {
-		pool.query('SELECT * from article', function (err, results) {
+		let start = (param.page - 1) * param.limit;
+		pool.query('SELECT * FROM article limit ' + start + ',' + param.limit, function (err, results) {
 			if (err) {
 				throw err;
 			}
@@ -28,17 +35,18 @@ router.get('/admin/api', async (ctx) => {
 	});
 
 	let total = await new Promise((resolve, reject) => {
-		pool.query('SELECT SUM(TABLE_ROWS) AS count FROM information_schema.PARTITIONS WHERE TABLE_SCHEMA = SCHEMA () AND TABLE_NAME = "article"', function (err, results) {
+		//SELECT SUM(TABLE_ROWS) AS count FROM information_schema.PARTITIONS WHERE TABLE_SCHEMA = SCHEMA () AND TABLE_NAME = "article"
+		pool.query('SELECT COUNT(*) FROM article', function (err, results) {
 			if (err) {
 				throw err;
 			}
-			resolve(results);
+			resolve(results[0]['COUNT(*)']);
 		});
 	});
 
 	ctx.body = {
 		code: 0,
-		count: total[0].count,
+		count: total,
 		data: data,
 		msg: 'ok'
 	};
@@ -78,12 +86,16 @@ router.post('/submit', koaBody(), async (ctx) => {
 				extName = 'gif';
 				break;
 		}
-		function createRandomId() {
-			return (Math.random() * 10000000).toString(16).substr(0, 4) + '-' + new Date().getTime() + '-' + Math.random().toString().substr(2, 5);
+		//移动上传的图片
+		if (extName !== '') {
+			function createRandomId() {
+				return (Math.random() * 10000000).toString(16).substr(0, 4) + '-' + new Date().getTime() + '-' + Math.random().toString().substr(2, 5);
+			}
+			var avatarName = createRandomId() + '.' + extName;
+			var newPath = form.uploadDir + avatarName;
+			fs.renameSync(files.file.path, newPath); //重命名
 		}
-		var avatarName = createRandomId() + '.' + extName;
-		var newPath = form.uploadDir + avatarName;
-		fs.renameSync(files.file.path, newPath); //重命名
+
 		const name = fields.nickname;
 		const contact = fields.contact;
 		const way = fields.way || '';
@@ -97,11 +109,8 @@ router.post('/submit', koaBody(), async (ctx) => {
 				console.log('[INSERT ERROR] - ', err.message);
 				return;
 			}
-			console.log('Record inserted Successfully');
 		});
 	});
-
-	return ctx.redirect('submit_success.html');
 });
 
 //编辑 api
@@ -147,6 +156,9 @@ router.get('/del/:id', async (ctx) => {
 		console.log('Delete Successfully');
 	});
 	pool.query('ALTER TABLE article AUTO_INCREMENT = 1');
+	ctx.body = {
+		code: 200
+	};
 });
 
 module.exports = router;

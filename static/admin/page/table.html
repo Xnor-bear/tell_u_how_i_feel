@@ -65,6 +65,7 @@
 			<label class="layui-form-label">联系途径</label>
 			<div class="layui-input-block">
 				<select name="Way" lay-filter="Way">
+					<option value="">无</option>
 					<option value="wechat">微信</option>
 					<option value="qq">QQ</option>
 					<option value="phone">手机</option>
@@ -75,7 +76,7 @@
 		<div class="layui-form-item">
 			<label class="layui-form-label">联系方式</label>
 			<div class="layui-input-block">
-				<input type="text" name="Contact" required lay-verify="required" autocomplete="off" class="layui-input" />
+				<input type="text" name="Contact" autocomplete="off" class="layui-input" />
 			</div>
 		</div>
 
@@ -126,7 +127,7 @@
 						},
 						sort: true
 					},
-					{ field: 'Way', title: '联系途径', width: 80 },
+					{ field: 'Way', title: '联系途径', width: 120 },
 					{ field: 'Contact', title: '联系方式', width: 150 },
 					{ title: '操作', minWidth: 150, toolbar: '#currentTableBar' }
 				]
@@ -190,10 +191,10 @@
 				});
 
 				form.val('formEdit', {
-					Author: data.Author,
-					Content: data.Content,
-					Way: data.Way,
-					Contact: data.Contact
+					Author: obj.data.Author,
+					Content: obj.data.Content,
+					Way: obj.data.Way,
+					Contact: obj.data.Contact
 				});
 				//动态向表传递赋值可以参看文章进行修改界面的更新前数据的显示，当然也是异步请求的要数据的修改数据的获取
 				form.on('submit(editSubmit)', function (massage) {
